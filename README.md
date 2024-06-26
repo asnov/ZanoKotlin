@@ -5,6 +5,9 @@ The android package should be distributed via gradle (maven or jitpack should be
 build_android_libs.sh
 android libs require to have ndk 26.2.11394342 located in default location.
 
+
+**24/06/2024** 16:00-19:00 3h
+
 Kotlin: how to call .a library
 - [ ] https://kotlinlang.org/docs/native-c-interop.html
 - [x] https://matt-moore.medium.com/kotlin-jni-for-native-code-835e93af7ddf Kotlin JNI for Native Code: How to call native code from Kotlin.
@@ -64,7 +67,7 @@ JNI = Java Native Interface
 ~/Library/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include/jni.h
 
 `sudo find / -type d -name "*-openjdk-*" 2>&1 | grep -v -e "Permission denied" -e "Operation not permitted" -e "No such file or directory" -e "Not a directory"`
-
+-
 
 `lipo -info libhello.so`
 Non-fat file: libhello.so is architecture: arm64
@@ -73,6 +76,62 @@ Non-fat file: libhello.so is architecture: arm64
 `java -jar -Djava.library.path=. NativeSample.jar`
 Exception in thread "main" java.lang.UnsatisfiedLinkError: no hello in java.library.path
 - [x] https://stackoverflow.com/questions/761639/why-am-i-getting-this-unsatisfiedlinkerror-with-native-code
-`mv libhello.so libhello.jnilib` helped
+  `mv libhello.so libhello.jnilib` helped
+
+- [ ] https://github.com/asnov/ZanoKotlin/packages
+  JNI
+
+
+**25/06/2024** 12:00-13:00, 16:00-18:00 3h
+- [ ] https://developer.android.com/ndk/index.html
+- [ ] https://github.com/googlesamples/android-ndk
+    - [ ] https://github.com/android-ndk/ndk/issues/new
+
+how to create and publish gradle package
+- [ ] 
+
+gradle kotlin publishing
+- [ ] https://stackoverflow.com/questions/71181790/how-do-you-publish-a-kotlin-artifact-to-maven-central
+- [ ] 
+
+not a mach-o file
+- [x] https://en.wikipedia.org/wiki/Mach-O
+    - [x] https://sourceforge.net/projects/machoview/
+    - ~/upWork/Zano/machoview-code
+    - find . -name "*.mm" -exec wc -l {} \;
+    - **18609** lines of code en total
+- [ ] .
+  File formats: \*.a, mach-o,
+  Utils:
+- file - – determine file type
+- lipo (xcode toolchain) - create or operate on universal files
+- otool (xcode toolchain) - object file displaying tool
+- objdump - llvm object file dumper
+- libtool (xctoolchain) - create libraries
+- ranlib (xctoolchain) - add or update the table of contents of archive libraries
+
+`find zano_native_lib -type f -name "*.a" -exec file {} \;`
+242 files
+`find zano_native_lib -type f -name "*.a" -exec file {} \; | grep Mach`
+zano_native_lib/_install_ios/lib/lib**wallet**.a.xcframework/ios-arm64_x86_64-simulator/lib**wallet**.a
+zano_native_lib/_install_ios/arm64_x86_64_simulator_temp/lib/lib**wallet**.a
+
+(file does not start with MH_MAGIC[_64], file does not start with MH_MAGIC[_64], fat file, but missing compatible architecture (have 'x86_64,arm64', need 'arm64e' or 'arm64'))
+
+current ar archive random library vs current ar archive
+- [ ] https://softwareengineering.stackexchange.com/questions/389383/what-is-the-difference-between-a-static-library-and-an-archive-library
+
+`file libhello.jnilib`
+libhello.jnilib: Mach-O 64-bit dynamically linked shared library arm64
+`file libwallet.jnilib`
+libwallet.jnilib: Mach-O universal binary with 2 architectures: \[x86_64:current ar archive] \ [arm64]
+libwallet.jnilib (for architecture x86_64): current ar archive
+libwallet.jnilib (for architecture arm64): current ar archive 
+
+
+
+
+
+
 
 

@@ -3,4 +3,9 @@ fun main() {
 
   val version = Wallet().version()
   print("version:$version")
+
+
+
+  val res = answer()
+  print("answer:${res}")
 }

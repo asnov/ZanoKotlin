@@ -32,9 +32,10 @@ JNI = Java Native Interface
 ~/.konan/kotlin-native-prebuilt-macos-aarch64-1.9.0/bin/klib
 ~/coding/kotlin/native/kotlin-native-macos-aarch64-1.8.20/bin/klib
 
-`kotlinc-jvm -include-runtime -d NativeSample.jar *.kt`
-`gcc hello.c -o libhello.jnilib -shared -fPIC -I /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home/include -I /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home/include/darwin`
-
+```bash
+kotlinc-jvm -include-runtime -d NativeSample.jar *.kt
+gcc hello.c -o libhello.jnilib -shared -fPIC -I /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home/include -I /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home/include/darwin
+```
 
 `sudo find / -type f -name jni.h 2>&1 | grep -v -e "Permission denied" -e "Operation not permitted" -e "No such file or directory" -e "Not a directory"`
 /usr/local/lib/node_modules/react-native/ReactAndroid/src/main/jni/first-party/jni-hack/real/jni.h
@@ -72,8 +73,11 @@ JNI = Java Native Interface
 `lipo -info libhello.so`
 Non-fat file: libhello.so is architecture: arm64
 
-`java -jar NativeSample.jar`
-`java -jar -Djava.library.path=. NativeSample.jar`
+```bash
+java -jar NativeSample.jar
+java -jar -Djava.library.path=. NativeSample.jar
+```
+
 Exception in thread "main" java.lang.UnsatisfiedLinkError: no hello in java.library.path
 - [x] https://stackoverflow.com/questions/761639/why-am-i-getting-this-unsatisfiedlinkerror-with-native-code
   `mv libhello.so libhello.jnilib` helped
@@ -85,7 +89,7 @@ Exception in thread "main" java.lang.UnsatisfiedLinkError: no hello in java.libr
 **25/06/2024** 12:00-13:00, 16:00-18:00 3h
 - [ ] https://developer.android.com/ndk/index.html
 - [ ] https://github.com/googlesamples/android-ndk
-    - [ ] https://github.com/android-ndk/ndk/issues/new
+  - [ ] https://github.com/android-ndk/ndk/issues/new
 
 how to create and publish gradle package
 - [ ] 
@@ -96,19 +100,22 @@ gradle kotlin publishing
 
 not a mach-o file
 - [x] https://en.wikipedia.org/wiki/Mach-O
-    - [x] https://sourceforge.net/projects/machoview/
-    - ~/upWork/Zano/machoview-code
-    - find . -name "*.mm" -exec wc -l {} \;
-    - **18609** lines of code en total
+  - [x] https://sourceforge.net/projects/machoview/
+  - ~/upWork/Zano/machoview-code
+  - find . -name "*.mm" -exec wc -l {} \;
+  - **18609** lines of code en total
 - [ ] .
   File formats: \*.a, mach-o,
   Utils:
 - file - – determine file type
+- ar – create and maintain library archives
+- ranlib (xcode toolchain) - add or update the table of contents of archive libraries
 - lipo (xcode toolchain) - create or operate on universal files
 - otool (xcode toolchain) - object file displaying tool
 - objdump - llvm object file dumper
 - libtool (xctoolchain) - create libraries
 - ranlib (xctoolchain) - add or update the table of contents of archive libraries
+
 
 `find zano_native_lib -type f -name "*.a" -exec file {} \;`
 242 files
@@ -120,18 +127,42 @@ zano_native_lib/_install_ios/arm64_x86_64_simulator_temp/lib/lib**wallet**.a
 
 current ar archive random library vs current ar archive
 - [ ] https://softwareengineering.stackexchange.com/questions/389383/what-is-the-difference-between-a-static-library-and-an-archive-library
+```bash
+echo "int answer() { return 42; }" > answer.cpp
+c++ -c answer.cpp -o answer.o
+ar -r libanswer.a answer.o
+ar -tv libanswer.a
+```
 
 `file libhello.jnilib`
 libhello.jnilib: Mach-O 64-bit dynamically linked shared library arm64
 `file libwallet.jnilib`
 libwallet.jnilib: Mach-O universal binary with 2 architectures: \[x86_64:current ar archive] \ [arm64]
 libwallet.jnilib (for architecture x86_64): current ar archive
-libwallet.jnilib (for architecture arm64): current ar archive 
+libwallet.jnilib (for architecture arm64): current ar archive
 
 
+**26/06/2024** 11:00-13:00, 16:00-17:00 3h
 
+- [ ] https://softwareengineering.stackexchange.com/questions/389383/what-is-the-difference-between-a-static-library-and-an-archive-library
+  - [ ] https://en.wikipedia.org/wiki/Ar_(Unix)#Example_usage
+  - [x] https://softwareengineering.stackexchange.com/questions/313907/should-i-add-the-source-of-libraries-instead-of-linking-to-them/369128#369128
+- [ ] 
 
+(unloadable mach-o file type 1 './libanswer.jnilib')
+(not a mach-o file)
 
+`file answer.o`
+answer.o: Mach-O 64-bit object arm64
+`file libanswer.a`
+libanswer.a: current ar archive random library
+`file libanswer.jnilib`
+libanswer.jnilib: Mach-O 64-bit dynamically linked shared library arm64
+`file ../libanswer.jnilib`
+../libanswer.jnilib: current ar archive random library
 
+Exception in thread "main" java.lang.UnsatisfiedLinkError: 'int MainKt.answer()'
+
+`gcc answer.cpp -o libanswer.jnilib -shared -fPIC -I /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home/include -I /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home/include/darwin`
 
 
